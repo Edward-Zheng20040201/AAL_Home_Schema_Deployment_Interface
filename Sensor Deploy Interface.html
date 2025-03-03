@@ -4,96 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AAL Home Schema Sensor Deployment</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .toolbar {
-            background: #333;
-            color: white;
-            padding: 10px;
-            display: flex;
-            gap: 20px;
-            position: relative;
-            z-index: 2000;
-        }
-        .menu {
-            position: relative;
-            cursor: pointer;
-        }
-        .dropdown {
-            display: none;
-            position: absolute;
-            background: white;
-            color: black;
-            padding: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 3000;
-        }
-        .menu:hover .dropdown {
-            display: block;
-        }
-        .container {
-            display: flex;
-            height: calc(100vh - 40px);
-            position: relative;
-        }
-        .sidebar {
-            width: 250px;
-            background: #f4f4f4;
-            padding: 10px;
-            position: fixed;
-            top: 40px;
-            left: 0;
-            bottom: 0;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-        }
-        .sidebar.visible {
-            transform: translateX(0);
-        }
-        .toggle-btn {
-            background: #333;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            position: fixed;
-            top: 50px;
-            left: 10px;
-            z-index: 1100;
-        }
-        .workspace {
-            flex-grow: 1;
-            background: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            width: 100%;
-            z-index: 500;
-        }
-        .workspace img {
-            max-width: 90%;
-            max-height: 90%;
-        }
-    </style>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('visible');
-        }
-    </script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="toolbar">
         <div class="menu">File
             <div class="dropdown">
-                <p>Load Layout</p>
+                <label for="fileInput">Load Layout</label>
+                <input type="file" id="fileInput" accept=".dwg,.dxf" onchange="uploadAndConvert()">
                 <p>Save Schema</p>
                 <p>Exit</p>
             </div>
@@ -119,5 +37,55 @@
             <p>Load a layout to begin...</p>
         </div>
     </div>
+    <script>
+        async function uploadAndConvert() 
+        {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) 
+            {
+                alert('Please select a DWG or DXF file.');
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let formData = new FormData();
+            formData.append("file", file);
+
+            try 
+            {
+                let response = await fetch('http://localhost:3000/convert', {method: 'POST',body: formData});
+
+                if (!response.ok) 
+                {
+                    let errorData = await response.json();
+                    throw new Error(errorData.error || 'Conversion failed');
+                }
+
+                let result = await response.json();
+
+                if (result.pdfUrl) 
+                {
+                    document.querySelector('.workspace').innerHTML = `
+                        <iframe class="pdf-container" src="${result.pdfUrl}" width="100%" height="100%"></iframe>
+                    `;
+                } 
+                else 
+                {
+                    alert('Conversion failed. Please try again.');
+                }
+            } 
+            catch (error) 
+            {
+                console.error('Upload error:', error);
+                alert(error.message || 'Error uploading file.');
+            }
+        }
+
+        function toggleSidebar() 
+        {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('visible');
+        }
+    </script>
 </body>
 </html>

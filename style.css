@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.toolbar {
+    background: #333;
+    color: white;
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+    position: relative;
+    z-index: 2000;
+}
+.menu {
+    position: relative;
+    cursor: pointer;
+}
+.dropdown {
+    display: none;
+    position: absolute;
+    background: white;
+    color: black;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 3000;
+}
+.menu:hover .dropdown {
+    display: block;
+}
+.container {
+    display: flex;
+    height: calc(100vh - 40px);
+    position: relative;
+}
+.sidebar {
+    width: 250px;
+    background: #f4f4f4;
+    padding: 10px;
+    position: fixed;
+    top: 40px;
+    left: 0;
+    bottom: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+}
+.sidebar.visible {
+    transform: translateX(0);
+}
+.toggle-btn {
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    position: fixed;
+    top: 50px;
+    left: 10px;
+    z-index: 1100;
+}
+.workspace {
+    flex-grow: 1;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    z-index: 500;
+}
+.pdf-container {
+    width: 90%;
+    height: 90%;
+    border: none;
+}
