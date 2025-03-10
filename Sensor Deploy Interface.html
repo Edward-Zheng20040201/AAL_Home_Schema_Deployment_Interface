@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AAL Home Schema Sensor Deployment</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.6.172/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.6.172/pdf.worker.min.js';
+    </script>
 </head>
 <body>
+
     <div class="toolbar">
         <div class="menu">File
             <div class="dropdown">
@@ -25,7 +30,7 @@
         <div class="sidebar">
             <br>
             <br>
-            <button>Create Room</button>
+            <button onclick="startCreateRoom()">Create Room</button>
             <h3>Sensors</h3>
             <p>PIR Sensor</p>
             <p>Contact Sensor</p>
@@ -33,59 +38,11 @@
             <p>Acoustic Sensor</p>
             <p>Smart Plug</p>
         </div>
+    
         <div class="workspace">
-            <p>Load a layout to begin...</p>
+            <div id="Schema-Container"></div>
         </div>
     </div>
-    <script>
-        async function uploadAndConvert() 
-        {
-            const fileInput = document.getElementById('fileInput');
-            if (fileInput.files.length === 0) 
-            {
-                alert('Please select a DWG or DXF file.');
-                return;
-            }
-
-            let file = fileInput.files[0];
-            let formData = new FormData();
-            formData.append("file", file);
-
-            try 
-            {
-                let response = await fetch('http://localhost:3000/convert', {method: 'POST',body: formData});
-
-                if (!response.ok) 
-                {
-                    let errorData = await response.json();
-                    throw new Error(errorData.error || 'Conversion failed');
-                }
-
-                let result = await response.json();
-
-                if (result.pdfUrl) 
-                {
-                    document.querySelector('.workspace').innerHTML = `
-                        <iframe class="pdf-container" src="${result.pdfUrl}" width="100%" height="100%"></iframe>
-                    `;
-                } 
-                else 
-                {
-                    alert('Conversion failed. Please try again.');
-                }
-            } 
-            catch (error) 
-            {
-                console.error('Upload error:', error);
-                alert(error.message || 'Error uploading file.');
-            }
-        }
-
-        function toggleSidebar() 
-        {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('visible');
-        }
-    </script>
+    <script src = "scripts.js"></script>
 </body>
 </html>

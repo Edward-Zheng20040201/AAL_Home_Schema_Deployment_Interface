@@ -1,9 +1,12 @@
-body {
+body 
+{
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
-.toolbar {
+
+.toolbar 
+{
     background: #333;
     color: white;
     padding: 10px;
@@ -12,11 +15,15 @@ body {
     position: relative;
     z-index: 2000;
 }
-.menu {
+
+.menu 
+{
     position: relative;
     cursor: pointer;
 }
-.dropdown {
+
+.dropdown 
+{
     display: none;
     position: absolute;
     background: white;
@@ -25,15 +32,21 @@ body {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 3000;
 }
-.menu:hover .dropdown {
+
+.menu:hover .dropdown 
+{
     display: block;
 }
-.container {
+
+.container 
+{
     display: flex;
     height: calc(100vh - 40px);
     position: relative;
 }
-.sidebar {
+
+.sidebar 
+{
     width: 250px;
     background: #f4f4f4;
     padding: 10px;
@@ -46,10 +59,14 @@ body {
     transition: transform 0.3s ease-in-out;
     z-index: 1000;
 }
-.sidebar.visible {
+
+.sidebar.visible 
+{
     transform: translateX(0);
 }
-.toggle-btn {
+
+.toggle-btn 
+{
     background: #333;
     color: white;
     padding: 5px 10px;
@@ -60,18 +77,23 @@ body {
     left: 10px;
     z-index: 1100;
 }
-.workspace {
-    flex-grow: 1;
-    background: #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.workspace 
+{
     position: relative;
     width: 100%;
-    z-index: 500;
+    height: 100%;
+    overflow: hidden;
 }
-.pdf-container {
-    width: 90%;
-    height: 90%;
-    border: none;
+
+#Schema-Container
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    pointer-events: auto; 
 }
