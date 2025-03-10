@@ -67,7 +67,7 @@ app.post('/convert', upload.single('file'), async (req, res) =>
         fs.writeFileSync(pdfPath, pdfResponse.data);
 
         // return access url
-        res.json({ pdfUrl: `${API_BASE_URL}/ConvertedPDF/converted.pdf` });
+        res.json({ pdfUrl: `${API_BASE_URL}/converted.pdf` });
     } 
     catch (error) 
     {
