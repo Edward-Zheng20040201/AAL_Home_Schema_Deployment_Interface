@@ -66,7 +66,7 @@ async function renderPDF(pdfUrl) //////////////////////**************** Note: Di
 
     if (!pdfUrl.startsWith('http')) 
     {
-        pdfUrl = isLocal ? baseUrl + pdfUrl : window.location.origin + pdfUrl;
+        pdfUrl = isLocal ? `http://localhost:3000${pdfUrl}` : `${window.location.origin}${pdfUrl}`;
     }
 
     try 
