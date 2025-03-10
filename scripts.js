@@ -64,10 +64,9 @@ async function renderPDF(pdfUrl) //////////////////////**************** Note: Di
 {
     SchemaContainer.innerHTML = '';
 
-    if (!pdfUrl.startsWith('http')) 
-    {
-        pdfUrl = isLocal ? `http://localhost:3000${pdfUrl}` : `${window.location.origin}${pdfUrl}`;
-    }
+    
+        pdfUrl = 'https://home-schema-deploy.onrender.com/ConvertedPDF/converted.pdf';
+    
 
     try 
     {
