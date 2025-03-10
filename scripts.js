@@ -6,6 +6,9 @@ let startX, startY;
 let offsetX = 0, offsetY = 0;
 let transformScale = 1.5;
 
+const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
+const API_BASE_URL = isLocal ? 'http://localhost:3000' : 'https://home-schema-deploy.onrender.com';
+
 // -------------------- Schema Functions ----------------------------------------------------------------------------------------------------------
 
 SchemaContainer.style.overflow = 'hidden';
@@ -26,7 +29,8 @@ async function uploadAndConvert()
 
     try 
     {
-        let response = await fetch('http://localhost:3000/convert', {
+        let response = await fetch(`${API_BASE_URL}/convert`, 
+        {
             method: 'POST',
             body: formData
         });
@@ -125,11 +129,10 @@ function centerPDF()
 function showPDFInstructions() 
 {
     const instructions = `
-        How to interact with the PDF:
-        1. **Zoom**: Use the mouse wheel to zoom in and out.
-        2. **Pan**: Press the middle mouse button (or scroll wheel) and drag to move the PDF.
+        How to interact with the Schema:
+        1. Use the mouse wheel to zoom in and out.
+        2. Press the middle mouse button (or scroll wheel) and drag to move the Schema.
     `;
-
     alert(instructions);
 }
 
@@ -236,7 +239,11 @@ class Room
 function startCreateRoom() 
 {
     isCreatingRoom = true;
-    alert('Click and drag to create a room.');
+    const room_instructions = `
+        1. Click and drag to draw a room.
+        2. Right click to name a room.
+    `;
+    alert(room_instructions);
 }
 
 SchemaContainer.addEventListener('mousedown', (event) => 
