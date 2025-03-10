@@ -11,6 +11,7 @@ const upload = multer({ dest: 'uploads/' });
 
 app.use(cors());
 app.use(express.static('ConvertedPDF'));
+app.use(express.static(path.join(__dirname, '/')));
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
 const CONVERT_API_SECRET = 'secret_TWpuPgwXJQk7UlzT';
