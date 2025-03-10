@@ -15,6 +15,12 @@ app.use(express.static('ConvertedPDF'));
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
 const CONVERT_API_SECRET = 'secret_TWpuPgwXJQk7UlzT';
 
+app.get('/', (req, res) => 
+{
+    res.sendFile(path.join(__dirname, 'Sensor Deploy Interface.html'));
+});
+
+
 // -------------------- Ensure Converted Directory Exists ------------------------
 
 const ConvDir = path.join(__dirname, 'ConvertedPDF');
