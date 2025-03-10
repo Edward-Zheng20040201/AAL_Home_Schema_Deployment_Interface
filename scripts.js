@@ -64,9 +64,16 @@ async function renderPDF(pdfUrl) //////////////////////**************** Note: Di
 {
     SchemaContainer.innerHTML = '';
 
-    
-        pdfUrl = 'https://home-schema-deploy.onrender.com/ConvertedPDF/converted.pdf';
-    
+    const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
+
+    if (isLocal) 
+    {
+        pdfUrl = `http://localhost:3000/ConvertedPDF/converted.pdf`;
+    } 
+    else 
+    {
+        pdfUrl = `https://home-schema-deploy.onrender.com/ConvertedPDF/converted.pdf`;
+    }
 
     try 
     {
