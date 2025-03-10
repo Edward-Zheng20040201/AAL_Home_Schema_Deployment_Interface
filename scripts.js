@@ -66,14 +66,7 @@ async function renderPDF(pdfUrl) //////////////////////**************** Note: Di
 
     if (!pdfUrl.startsWith('http')) 
     {
-        if (window.location.protocol === 'file:') 
-        {
-            pdfUrl = 'http://localhost:3000' + pdfUrl;
-        } 
-        else 
-        {
-            pdfUrl = window.location.origin + pdfUrl;
-        }
+        pdfUrl = isLocal ? baseUrl + pdfUrl : window.location.origin + pdfUrl;
     }
 
     try 
@@ -128,11 +121,7 @@ function centerPDF()
 
 function showPDFInstructions() 
 {
-    const instructions = `
-        How to interact with the Schema:
-        1. Use the mouse wheel to zoom in and out.
-        2. Press the middle mouse button (or scroll wheel) and drag to move the Schema.
-    `;
+    const instructions = `How to interact with the Schema:\n1. Use the mouse wheel to zoom in and out.\n2. Press the middle mouse button (or scroll wheel) and drag to move the Schema.`;
     alert(instructions);
 }
 
@@ -239,10 +228,7 @@ class Room
 function startCreateRoom() 
 {
     isCreatingRoom = true;
-    const room_instructions = `
-        1. Click and drag to draw a room.
-        2. Right click to name a room.
-    `;
+    const room_instructions = `1. Click and drag to draw a room.\n2. Right click to name a room.`;
     alert(room_instructions);
 }
 
