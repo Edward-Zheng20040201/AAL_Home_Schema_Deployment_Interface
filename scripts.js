@@ -192,6 +192,75 @@ let rooms = [];
 let isCreatingRoom = false;
 let currentRoom = null;
 
+
+// 新增：模态框相关代码
+const modal = document.createElement('div');
+modal.style.display = 'none';
+modal.style.position = 'fixed';
+modal.style.top = '50%';
+modal.style.left = '50%';
+modal.style.transform = 'translate(-50%, -50%)';
+modal.style.backgroundColor = 'white';
+modal.style.padding = '20px';
+modal.style.zIndex = '10000';
+modal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+modal.innerHTML = `
+    <input type="text" id="roomNameInput" placeholder="Enter room name">
+    <button id="saveRoomName">Save</button>
+    <button id="deleteRoom">Delete</button>
+    <button id="closeModal">Close</button>
+`;
+document.body.appendChild(modal);
+
+// 新增：背景遮罩层
+const overlay = document.createElement('div');
+overlay.style.display = 'none';
+overlay.style.position = 'fixed';
+overlay.style.top = '0';
+overlay.style.left = '0';
+overlay.style.width = '100%';
+overlay.style.height = '100%';
+overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+overlay.style.zIndex = '9999';
+document.body.appendChild(overlay);
+
+// 新增：显示模态框
+function showModal(room) 
+{
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+    document.getElementById('roomNameInput').value = room.name;
+
+    // 保存按钮点击事件
+    document.getElementById('saveRoomName').onclick = () => 
+    {
+        const newName = document.getElementById('roomNameInput').value;
+        if (newName) 
+        {
+            room.updateName(newName);
+        }
+        hideModal();
+    };
+
+    // 删除按钮点击事件
+    document.getElementById('deleteRoom').onclick = () => 
+    {
+        room.element.remove();
+        rooms = rooms.filter(r => r.id !== room.id);
+        hideModal();
+    };
+
+    // 关闭按钮点击事件
+    document.getElementById('closeModal').onclick = hideModal;
+}
+
+// 新增：隐藏模态框
+function hideModal() 
+{
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
 class Room 
 {
     constructor(x, y, width, height, name) 
@@ -287,21 +356,18 @@ SchemaContainer.addEventListener('mouseup', (event) =>
     }
 });
 
+///////////////right click-------------------
 SchemaContainer.addEventListener('contextmenu', (event) => 
-{
-    event.preventDefault();
-
-    const targetRoom = event.target.dataset.roomId;
-    if (targetRoom) 
     {
-        const room = rooms.find(r => r.id == targetRoom);
-        if (room) 
+        event.preventDefault();
+    
+        const targetRoom = event.target.dataset.roomId;
+        if (targetRoom) 
         {
-            const newName = prompt('Enter room name:', room.name);
-            if (newName) 
+            const room = rooms.find(r => r.id == targetRoom);
+            if (room) 
             {
-                room.updateName(newName);
+                showModal(room);
             }
         }
-    }
-});
+    });
