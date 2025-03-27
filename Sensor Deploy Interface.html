@@ -11,16 +11,41 @@
     </script>
 </head>
 <body>
+    <!--   Login  ----------------------------------->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Sign In</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p>Don't have an account? <a href="#" onclick="showRegisterModal(); return false;">Register</a></p>
+        </div>
+    </div>
+    
+    <!-- sign up  -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Register</h2>
+            <input type="text" id="reg-username" placeholder="Username">
+            <input type="password" id="reg-password" placeholder="Password">
+            <button onclick="register()">Register</button>
+            <p>Already have an account? <a href="#" onclick="showLoginModal()">Sign In</a></p>
+        </div>
+    </div>
 
     <div class="toolbar">
         <div class="menu">File
             <div class="dropdown">
-                <label for="fileInput">Load Layout</label>
-                <input type="file" id="fileInput" accept=".dwg,.dxf" onchange="uploadAndConvert()">
-                <p>Save Schema</p>
-                <p>Exit</p>
+                <p onclick="checkLogin(uploadAndConvert)">Upload DWG/DXF</p>
+                <p onclick="checkLogin(loadLayout)">Load Layout</p>
+                <p onclick="checkLogin(saveLayout)">Save Layout</p>
+                <hr>
+                <p id="sign-out-btn" style="display:none;" onclick="logout()">Sign Out</p>
             </div>
         </div>
+        
         <div class="menu">Help</div>
     </div>
     
@@ -30,7 +55,9 @@
         <div class="sidebar">
             <br>
             <br>
-            <button onclick="startCreateRoom()">Create Room</button>
+  
+                <button class="hover-target" data-hover-message="Left click, Hold down and drag to draw a room on the schema. Right click to edit." onclick="startCreateRoom()">Create Room</button>
+                <div class="hover-message" id="hoverMessage"></div>
             <h3>Sensors</h3>
             <p>PIR Sensor</p>
             <p>Contact Sensor</p>
