@@ -1,1 +1,1 @@
-{"layoutId":"1743061791025","layoutName":"test01","rooms":[],"pdfUrl":"1743061791025.pdf","createdAt":"2025-03-27T07:49:51.042Z"}
+{"layoutId":"1743061791025","layoutName":"test01","rooms":[{"id":1,"x":805.1430257161466,"y":340.09525553385447,"width":341.3333333333336,"height":385.3333333333337,"name":"Room 1"}],"pdfUrl":"1743061791025.pdf","createdAt":"2025-03-27T07:49:51.042Z","sensors":[]}

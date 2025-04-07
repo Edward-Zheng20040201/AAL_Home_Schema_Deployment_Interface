@@ -162,3 +162,22 @@ body
     font-size: 20px;
     cursor: pointer;
 }
+
+
+.sensor-item {
+    padding: 5px;
+    cursor: move;
+    user-select: none;
+}
+
+.sensor-icon {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    pointer-events: auto;
+    z-index: 10;
+}
+
+.dragging {
+    opacity: 0.5;
+}

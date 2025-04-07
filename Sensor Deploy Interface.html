@@ -40,7 +40,8 @@
             <div class="dropdown">
                 <p onclick="checkLogin(uploadAndConvert)">Upload DWG/DXF</p>
                 <p onclick="checkLogin(loadLayout)">Load Layout</p>
-                <p onclick="checkLogin(saveLayout)">Save Layout</p>
+                <p onclick="checkLogin(saveLayout)">Save</p>
+                <p onclick="checkLogin(saveLayoutAs)">Save As...</p>
                 <hr>
                 <p id="sign-out-btn" style="display:none;" onclick="logout()">Sign Out</p>
             </div>
@@ -55,15 +56,14 @@
         <div class="sidebar">
             <br>
             <br>
-  
-                <button class="hover-target" data-hover-message="Left click, Hold down and drag to draw a room on the schema. Right click to edit." onclick="startCreateRoom()">Create Room</button>
-                <div class="hover-message" id="hoverMessage"></div>
+            <button class="hover-target" data-hover-message="Left click, Hold down and drag to draw a room on the schema. Right click to edit." onclick="startCreateRoom()">Create Room</button>
+            <div class="hover-message" id="hoverMessage"></div>
             <h3>Sensors</h3>
-            <p>PIR Sensor</p>
-            <p>Contact Sensor</p>
-            <p>Pressure Sensor</p>
-            <p>Acoustic Sensor</p>
-            <p>Smart Plug</p>
+            <div class="sensor-item" draggable="true" data-sensor-type="PIR Sensor">PIR Sensor</div>
+            <div class="sensor-item" draggable="true" data-sensor-type="Contact Sensor">Contact Sensor</div>
+            <div class="sensor-item" draggable="true" data-sensor-type="Pressure Sensor">Pressure Sensor</div>
+            <div class="sensor-item" draggable="true" data-sensor-type="Acoustic Sensor">Acoustic Sensor</div>
+            <div class="sensor-item" draggable="true" data-sensor-type="Smart Plug">Smart Plug</div>
         </div>
     
         <div class="workspace">

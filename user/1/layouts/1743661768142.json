@@ -1,0 +1,1 @@
+{"layoutId":"1743661768142","layoutName":"test 01","rooms":[{"id":1,"x":216.71426391601562,"y":333.1429967880249,"width":386,"height":380,"name":"Rosfsdf"}],"sensors":[{"id":1743661749047,"type":"PIR Sensor","x":437.1430257161462,"y":572.0952453613286,"deployedRoom":"Rosfsdf"}],"pdfUrl":"1743661768142.pdf","createdAt":"2025-04-03T06:29:28.157Z"}

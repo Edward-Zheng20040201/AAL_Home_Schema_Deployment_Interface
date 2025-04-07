@@ -1,0 +1,30 @@
+现在我要求你更新file的下属菜单，要有upload dwg/dxf, load, 和 save，upload就是原来的load layout功能， save功能目前要求将转换而来的pdf文件以及当前work space内room的位置信息等等以json格式保存在user/{user_id}/layouts/{layout_id}， 而load功能会打开一个模态框，其中会展示这个user_id对应的目录下的layout，用户选择后就会加载包括room在内的pdf schema layout。
+顺带把upload 换成onclick 的 <p>而不是input，和save, load 保持统一格式，用注释标出与源代码不同的地方。
+
+传感器应该带上图标，src地址如下, 同时被拖拽并部署/放置在layout上的传感器也要以对应图标呈现，传感器需要能被重复拖拽，layout上会同时存在多个传感器。 传感器是object，其中一个element就是deployed_room, 在对应房间范围内放置的传感器的deployed_room就会设置成哪个房间的name， 从一个房间拖放到另一个房间的传感器会自动改写deployed_room。
+"\icons\sensor_icons\default.png"
+
+右键模态框，加入CRUD，需要能够编辑（创建并编辑）SensorML文件，然后传感器sensorML文件将被独立保存在supabase 的数据库中，而其他（layout上的位置信息）将被保存在和room以及pdf一样的layout文件夹中。
+传感器应该带上图标，src地址如下, 
+"\icons\sensor_icons\default.png"
+同时被拖拽并部署/放置在layout上的传感器也要以对应图标呈现，传感器需要能被重复拖拽，layout上会同时存在多个传感器。 传感器是object，其中一个element就是deployed_room, 在对应房间范围内放置的传感器的deployed_room就会设置成哪个房间的name， 从一个房间拖放到另一个房间的传感器会自动改写deployed_room。
+
+Changes to Research & Design:
+there hasn't been any change in the process of design and research since the first iteration.
+
+Implementation Status:
+	Implemented Features:
+	drag n drop sensor onto a existing room, edit and configure sensor setting.
+	a rough account register sysm.
+	save and load layouts.
+
+	In Progress Features:
+	tablet/moble phone UI.
+	manager acount.
+	enhance UI.
+	
+Revised Iteration Plan
+For the final iteration, the focus will be on completing the UI features and account system.
+
+Conclusion
+...
