@@ -198,7 +198,7 @@ const API_BASE_URL = isLocal ? 'http://localhost:3000' : 'https://home-schema-de
                                     centerPDF();
                                 } catch (error) {
                                     console.error('Error rendering PDF:', error);
-                                    throw error; // 抛出错误以便上层函数捕获
+                                    throw error; 
                                 }
                             }
 
@@ -212,10 +212,9 @@ const API_BASE_URL = isLocal ? 'http://localhost:3000' : 'https://home-schema-de
 
                                 SchemaContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${transformScale})`;
                                 
-                                // 确保房间元素也应用相同的变换
                                 rooms.forEach(room => {
                                     if (room.element) {
-                                        room.element.style.transform = `scale(${1/transformScale})`;
+                                        room.element.style.transform = `scale(${1/transformScale})`;//8888888888888888888888888888888
                                     }
                                 });
                             }
@@ -385,17 +384,18 @@ const API_BASE_URL = isLocal ? 'http://localhost:3000' : 'https://home-schema-de
 
                             class Sensor {
                                 constructor(type, x, y, deployedRoom = null) {
-                                    this.id = sensors.length + Date.now(); // Unique ID
+                                    this.id = sensors.length + Date.now(); 
                                     this.type = type;
                                     this.x = x;
                                     this.y = y;
-                                    this.deployedRoom = deployedRoom; // Name of the room it's deployed in
+                                    this.deployedRoom = deployedRoom;
+                                    this.sensorML = null; 
                                     this.element = null;
                                 }
 
                                 createElement() {
                                     const img = document.createElement('img');
-                                    img.src = './icons/sensor_icons/default.png'; // Updated path
+                                    img.src = './icons/sensor_icons/default.png';
                                     img.className = 'sensor-icon';
                                     img.style.left = `${this.x}px`;
                                     img.style.top = `${this.y}px`;
@@ -734,7 +734,6 @@ const API_BASE_URL = isLocal ? 'http://localhost:3000' : 'https://home-schema-de
                                     // Center everything
                                     centerPDF();
 
-                                    alert(`Layout "${layoutData.layoutName}" loaded successfully!`);
                                 } catch (error) {
                                     console.error('Error loading specific layout:', error);
                                     alert(error.message);
@@ -815,33 +814,129 @@ const API_BASE_URL = isLocal ? 'http://localhost:3000' : 'https://home-schema-de
                             sensorModal.style.padding = '20px';
                             sensorModal.style.zIndex = '10000';
                             sensorModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                            sensorModal.style.width = '600px';
+                            sensorModal.style.maxHeight = '80vh';
+                            sensorModal.style.overflow = 'auto';
                             sensorModal.innerHTML = `
                                 <h3>Sensor Details</h3>
                                 <p>Type: <span id="sensorType"></span></p>
                                 <p>Deployed Room: <span id="sensorRoom"></span></p>
-                                <button id="deleteSensor">Delete</button>
-                                <button id="closeSensorModal">Close</button>
+                                <div style="margin: 15px 0;">
+                                    <h4>SensorML Configuration</h4>
+                                    <textarea id="sensorMLContent" style="width: 100%; height: 200px; font-family: monospace;"></textarea>
+                                    <div style="margin-top: 10px;">
+                                        <button id="loadSampleSensorML">Load Sample</button>
+                                        <button id="saveSensorML">Save Configuration</button>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <button id="deleteSensor">Delete</button>
+                                    <button id="closeSensorModal">Close</button>
+                                </div>
                             `;
                             document.body.appendChild(sensorModal);
 
+                            let currentSensor = null;
+
                             function showSensorModal(sensor) {
+                                currentSensor = sensor;
                                 sensorModal.style.display = 'block';
                                 overlay.style.display = 'block';
                                 document.getElementById('sensorType').textContent = sensor.type;
                                 document.getElementById('sensorRoom').textContent = sensor.deployedRoom || 'None';
+                                
+                                // Load existing SensorML or empty template
+                                loadSensorMLContent(sensor.id);
+
+                                document.getElementById('loadSampleSensorML').onclick = () => {
+                                    // Load the sample SensorML content
+                                    fetch('physicalSystemInstance_standardConform.xml')
+                                        .then(response => response.text())
+                                        .then(data => {
+                                            document.getElementById('sensorMLContent').value = data;
+                                        })
+                                        .catch(error => {
+                                            console.error('Error loading sample SensorML:', error);
+                                            alert('Failed to load sample SensorML');
+                                        });
+                                };
+
+                                document.getElementById('saveSensorML').onclick = async () => {
+                                    const sensorMLContent = document.getElementById('sensorMLContent').value;
+                                    if (!sensorMLContent) {
+                                        alert('SensorML content cannot be empty');
+                                        return;
+                                    }
+
+                                    try {
+                                        const response = await fetch(`${API_BASE_URL}/update-sensor-ml/${sensor.id}`, {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ 
+                                                sensor_ml: sensorMLContent,
+                                                layout_id: currentLayoutId
+                                            })
+                                        });
+
+                                        const result = await response.json();
+                                        if (response.ok) {
+                                            alert('SensorML saved successfully!');
+                                        } else {
+                                            throw new Error(result.error || 'Failed to save SensorML');
+                                        }
+                                    } catch (error) {
+                                        console.error('Error saving SensorML:', error);
+                                        alert(error.message);
+                                    }
+                                };
 
                                 document.getElementById('deleteSensor').onclick = () => {
-                                    sensor.removeElement();
-                                    sensors = sensors.filter(s => s.id !== sensor.id);
-                                    hideSensorModal();
+                                    if (confirm('Are you sure you want to delete this sensor?')) {
+                                        sensor.removeElement();
+                                        sensors = sensors.filter(s => s.id !== sensor.id);
+                                        hideSensorModal();
+                                        
+                                        // Also delete from Supabase if needed
+                                        deleteSensorML(sensor.id);
+                                    }
                                 };
 
                                 document.getElementById('closeSensorModal').onclick = hideSensorModal;
                             }
 
+                            async function loadSensorMLContent(sensorId) {
+                                try {
+                                    const response = await fetch(`${API_BASE_URL}/get-sensor-ml/${sensorId}`);
+                                    const result = await response.json();
+                                    
+                                    if (response.ok && result.sensor_ml) {
+                                        document.getElementById('sensorMLContent').value = result.sensor_ml;
+                                    } else {
+                                        // Load empty template if no SensorML exists
+                                        document.getElementById('sensorMLContent').value = 
+                                            '<?xml version="1.0" encoding="UTF-8"?>\n<!-- Add your SensorML configuration here -->';
+                                    }
+                                } catch (error) {
+                                    console.error('Error loading SensorML:', error);
+                                    document.getElementById('sensorMLContent').value = 
+                                        '<?xml version="1.0" encoding="UTF-8"?>\n<!-- Error loading SensorML -->';
+                                }
+                            }
+
+                            async function deleteSensorML(sensorId) {
+                                try {
+                                    await fetch(`${API_BASE_URL}/delete-sensor-ml/${sensorId}`, {
+                                        method: 'DELETE'
+                                    });
+                                } catch (error) {
+                                    console.error('Error deleting SensorML:', error);
+                                }
+                            }
+
                             function hideSensorModal() {
                                 sensorModal.style.display = 'none';
                                 overlay.style.display = 'none';
+                                currentSensor = null;
                             }
 
 

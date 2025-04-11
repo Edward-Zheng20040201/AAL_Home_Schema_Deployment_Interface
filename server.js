@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, '/')));
 app.use('/icons', express.static(path.join(__dirname, 'icons')));
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
-const CONVERT_API_SECRET = 'secret_TWpuPgwXJQk7UlzT';
+const CONVERT_API_SECRET = 'secret_nvqMzdUpC6ydZ645';
 
 app.get('/', (req, res) => 
 {
@@ -57,7 +57,7 @@ app.get('/', (req, res) =>
                                 const { username, password } = req.body;
                                 
                                 if (!username || !password) {
-                                    return res.status(400).json({ error: "用户名和密码不能为空" });
+                                    return res.status(400).json({ error: "Username and password cannot be empty" });
                                 }
 
                                 // 插入新用户
@@ -67,7 +67,7 @@ app.get('/', (req, res) =>
                                     .select();
 
                                 if (error) {
-                                    return res.status(500).json({ error: "注册失败：" + error.message });
+                                    return res.status(500).json({ error: "Registration failed:" + error.message });
                                 }
 
                                 const userId = data[0].user_id;
@@ -79,9 +79,9 @@ app.get('/', (req, res) =>
                                 try {
                                     await fs.ensureDir(userFolder);
                                     await fs.ensureDir(layoutsFolder);
-                                    res.json({ message: "注册成功！", userId });
+                                    res.json({ message: "成功", userId });
                                 } catch (err) {
-                                    res.status(500).json({ error: "创建用户文件夹失败：" + err.message });
+                                    res.status(500).json({ error: "Failed to create user folder:" + err.message });
                                 }
                             });
 
@@ -90,7 +90,7 @@ app.get('/', (req, res) =>
                                 const { username, password } = req.body;
 
                                 if (!username || !password) {
-                                    return res.status(400).json({ error: "用户名和密码不能为空" });
+                                    return res.status(400).json({ error: "Login failed. Username or password is incorrect." });
                                 }
 
                                 const { data, error } = await supabase
@@ -101,12 +101,12 @@ app.get('/', (req, res) =>
                                     .single();
 
                                 if (error || !data) {
-                                    return res.status(401).json({ error: "登录失败，用户名或密码错误" });
+                                    return res.status(401).json({ error: "Login failed. Username or password is incorrect." });
                                 }
 
                                 // 使用 session 存储 user_id
                                 req.session.userId = data.user_id;
-                                res.json({ message: "登录成功！", userId: data.user_id });
+                                res.json({ message: "Login successful!", userId: data.user_id });
                             });
 
 // -- File Conversion Function -------------------------------
@@ -353,53 +353,99 @@ app.get('/', (req, res) =>
                                 console.log(`Server is running on port ${PORT}`);
                             });
 // -- SensorML -------------------------------------------------------
-                            // 创建 SensorML
-                            app.post('/create-sensor-ml', async (req, res) => {
-                                const { sensor_id, layout_id, sensor_ml } = req.body;
-
-                                if (!sensor_id || !layout_id || !sensor_ml) {
-                                    return res.status(400).json({ error: "sensor_id, layout_id, and sensor_ml are required" });
-                                }
+                            // Get SensorML for a sensor
+                            app.get('/get-sensor-ml/:sensor_id', async (req, res) => {
+                                const { sensor_id } = req.params;
 
                                 try {
                                     const { data, error } = await supabase
                                         .from('sensors')
-                                        .insert([{ sensor_id, layout_id, sensor_ml }]);
+                                        .select('sensor_ml')
+                                        .eq('sensor_id', sensor_id)
+                                        .single();
 
-                                    if (error) {
-                                        throw error;
+                                    if (error) throw error;
+
+                                    if (data) {
+                                        res.json({ sensor_ml: data.sensor_ml });
+                                    } else {
+                                        res.status(404).json({ error: "SensorML not found" });
                                     }
-
-                                    res.json({ message: "SensorML created successfully", data });
                                 } catch (error) {
-                                    console.error('Error creating SensorML:', error);
-                                    res.status(500).json({ error: "Failed to create SensorML" });
+                                    console.error('Error getting SensorML:', error);
+                                    res.status(500).json({ error: "Failed to get SensorML" });
                                 }
                             });
 
-                            // 更新 SensorML ****************check on this！！！！！！！！！！！！！！！！！！！！！！！！！！
+                            // Update SensorML
                             app.put('/update-sensor-ml/:sensor_id', async (req, res) => {
                                 const { sensor_id } = req.params;
-                                const { sensor_ml } = req.body;
+                                const { sensor_ml, layout_id } = req.body;
 
                                 if (!sensor_ml) {
                                     return res.status(400).json({ error: "sensor_ml is required" });
                                 }
 
                                 try {
-                                    const { data, error } = await supabase
+                                    // Check if record exists
+                                    const { data: existing, error: checkError } = await supabase
                                         .from('sensors')
-                                        .update({ sensor_ml })
-                                        .eq('sensor_id', sensor_id);
+                                        .select('sensor_id')
+                                        .eq('sensor_id', sensor_id)
+                                        .single();
 
-                                    if (error) {
-                                        throw error;
+                                    let result;
+                                    if (existing) {
+                                        // Update existing
+                                        const { data, error } = await supabase
+                                            .from('sensors')
+                                            .update({ sensor_ml })
+                                            .eq('sensor_id', sensor_id);
+                                        
+                                        if (error) throw error;
+                                        result = data;
+                                    } else {
+                                        // Create new
+                                        const { data, error } = await supabase
+                                            .from('sensors')
+                                            .insert([{ 
+                                                sensor_id, 
+                                                layout_id, 
+                                                sensor_ml 
+                                            }]);
+                                        
+                                        if (error) throw error;
+                                        result = data;
                                     }
 
-                                    res.json({ message: "SensorML updated successfully", data });
+                                    res.json({ 
+                                        message: "SensorML updated successfully", 
+                                        data: result 
+                                    });
                                 } catch (error) {
                                     console.error('Error updating SensorML:', error);
                                     res.status(500).json({ error: "Failed to update SensorML" });
                                 }
                             });
-                            
+
+                            // Delete SensorML
+                            app.delete('/delete-sensor-ml/:sensor_id', async (req, res) => {
+                                const { sensor_id } = req.params;
+
+                                try {
+                                    const { data, error } = await supabase
+                                        .from('sensors')
+                                        .delete()
+                                        .eq('sensor_id', sensor_id);
+
+                                    if (error) throw error;
+
+                                    res.json({ 
+                                        message: "SensorML deleted successfully", 
+                                        data 
+                                    });
+                                } catch (error) {
+                                    console.error('Error deleting SensorML:', error);
+                                    res.status(500).json({ error: "Failed to delete SensorML" });
+                                }
+                            });
