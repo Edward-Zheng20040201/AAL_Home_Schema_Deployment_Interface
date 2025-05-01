@@ -11,7 +11,7 @@
     </script>
 </head>
 <body>
-    <!--   Login  ----------------------------------->
+    <!-- Login -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeLoginModal()">&times;</span>
@@ -23,7 +23,7 @@
         </div>
     </div>
     
-    <!-- sign up  -->
+    <!-- Sign up -->
     <div id="register-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeRegisterModal()">&times;</span>
@@ -68,8 +68,14 @@
     
         <div class="workspace">
             <div id="Schema-Container"></div>
+            <div id="debug-panel" class="debug-panel">
+                <h3>Debug Info</h3>
+                <p>Workspace Zoom (transformScale): <span id="debug-transformScale">1</span></p>
+                <p>Workspace Offset X: <span id="debug-offsetX">0</span></p>
+                <p>Workspace Offset Y: <span id="debug-offsetY">0</span></p>
+            </div>
         </div>
     </div>
-    <script src = "scripts.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>

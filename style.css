@@ -98,8 +98,20 @@ body
     pointer-events: auto; 
 }
 
+/* Debug Panel */
+.debug-panel {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 14px;
+}
 
-/*----------------------- HOVER MESSAGE -----------------------------------------------------------------------------------------------------------------------*/
+/* Hover Message */
 .hover-message {
     position: absolute;
     display: none;
@@ -109,11 +121,11 @@ body
     border-radius: 5px;
     white-space: nowrap;
     z-index: 10;
-  }
+}
 
-  /*---------------------- Modal ----------------------------------------------------------------------------------------*/
-  .modal {
-    display: none; /* 只保留这一个 */
+/* Modal */
+.modal {
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -131,16 +143,16 @@ body
     border-radius: 10px;
     width: 300px;
     text-align: center;
-    box-sizing: border-box; /* 防止 padding 影响宽度 */
+    box-sizing: border-box;
 }
 
 .modal input {
-    width: calc(100% - 20px); /* 避免超出 modal-content */
-    margin: 10px 0; /* 让输入框垂直间距正常 */
+    width: calc(100% - 20px);
+    margin: 10px 0;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box; /* 确保 padding 不影响总宽度 */
+    box-sizing: border-box;
 }
 
 .modal button {
@@ -162,7 +174,6 @@ body
     font-size: 20px;
     cursor: pointer;
 }
-
 
 .sensor-item {
     padding: 5px;
